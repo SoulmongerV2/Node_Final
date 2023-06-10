@@ -5,7 +5,7 @@
   "main": "main.js",
   "type": "module",
   "scripts": {
-    "dev": "",
+    "dev": "nodemon main.js",
     "prod": "",
     "migrate": "",
     "rollback": "",
