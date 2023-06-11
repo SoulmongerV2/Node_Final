@@ -8,17 +8,17 @@
 </head>
 <body>
 
-    <table>
-        <tr>
-          <th>Text</th>
-        </tr>
-  
+
+      <ul style="list-style-type: none">
         <% for (const msg of messages) { %>
-        <tr>
-          <td><%= msg.text %></td>
-        </tr>
-        <% } %>
-      </table>
+          <li class="messages-item">
+            <%= msg.text %>
+            <a href="/remove-msg/<%= msg.id %>">Remove</a>
+          </li>
+          <% } %>
+      </ul>
+
+      
 
     <form action="/new-msg" method="post">
         <input type="text" name="text" />
@@ -26,3 +26,6 @@
       </form>
 </body>
 </html>
+
+
+

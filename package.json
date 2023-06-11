@@ -6,10 +6,10 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon main.js",
-    "prod": "",
-    "migrate": "",
-    "rollback": "",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "migrate": "knex migrate:latest",
+    "rollback": "knex migrate:rollback",
+    "prod": "node main.js",
+    "test": "ava"
   },
   "author": "",
   "license": "ISC",
