@@ -1,5 +1,5 @@
 import express from "express"
-import { db, getAllMessages } from "../src/db.js"
+import { db, getAllMessages } from "./database.js"
 
 
 export const app = express()
