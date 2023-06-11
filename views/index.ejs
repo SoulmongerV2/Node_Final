@@ -7,6 +7,22 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>First view</h1>
+
+    <table>
+        <tr>
+          <th>Text</th>
+        </tr>
+  
+        <% for (const msg of messages) { %>
+        <tr>
+          <td><%= msg.text %></td>
+        </tr>
+        <% } %>
+      </table>
+
+    <form action="/new-msg" method="post">
+        <input type="text" name="text" />
+        <button type="submit">Send</button>
+      </form>
 </body>
 </html>
