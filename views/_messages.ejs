@@ -1,0 +1,11 @@
+<ul style="list-style-type: none">
+    <% for (const msg of messages) { %>
+      <li class="messages-item">
+        <%= msg.text %>
+        <a href="/remove-msg/<%= msg.id %>">Remove</a>
+        <a href="/toggle-msg/<%= msg.id %>">
+          <%= msg.liked ? 'Liked' : 'Unliked' %>
+        </a>
+      </li>
+      <% } %>
+  </ul>

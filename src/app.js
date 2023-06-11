@@ -1,5 +1,6 @@
 import express from "express"
-import { db, getAllMessages } from "./database.js"
+import { db } from "./database.js"
+import { sendMessagesToAllConnections } from "./websockets.js"
 
 
 export const app = express()
@@ -26,6 +27,8 @@ app.post("/new-msg", async (req, res) => {
 
     await db("messages").insert(newMsg)
 
+    sendMessagesToAllConnections()
+
     res.redirect("/")
 })
 
@@ -33,6 +36,8 @@ app.get("/remove-msg/:id", async (req, res) => {
     const idToRemove = Number(req.params.id)
 
     await db("messages").delete().where("id", idToRemove)
+
+    sendMessagesToAllConnections()
 
     res.redirect("/")
 })
@@ -44,6 +49,8 @@ app.get("/toggle-msg/:id", async (req, res, next) => {
     if (!msgToToggle) return next()
 
     await db("messages").update({liked: !msgToToggle.liked}).where("id", idToToggle)
+
+    sendMessagesToAllConnections()
 
     res.redirect("/")
 })

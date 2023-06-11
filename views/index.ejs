@@ -8,18 +8,9 @@
 </head>
 <body>
 
-
-      <ul style="list-style-type: none">
-        <% for (const msg of messages) { %>
-          <li class="messages-item">
-            <%= msg.text %>
-            <a href="/remove-msg/<%= msg.id %>">Remove</a>
-            <a href="/toggle-msg/<%= msg.id %>">
-              <%= msg.liked ? 'Liked' : 'Unliked' %>
-            </a>
-          </li>
-          <% } %>
-      </ul>
+    <div id="messages">
+      <%- include("_messages") %>
+    </div>
 
       
 
@@ -32,11 +23,8 @@
       <script>
         const ws = new WebSocket("ws://localhost:3000")
         
-        ws.addEventListener("message", (ev) => {
-          const message = JSON.parse(ev.data)
-          if (message.type === "todos") {  
-            document.getElementById("todos").innerHTML = message.html
-          }
+        ws.addEventListener("message", (message) => {
+          document.getElementById("messages").innerHTML = message.data
         })
       
       </script>
