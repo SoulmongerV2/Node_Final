@@ -37,3 +37,13 @@ app.get("/remove-msg/:id", async (req, res) => {
     res.redirect("/")
 })
 
+app.get("/toggle-msg/:id", async (req, res, next) => {
+    const idToToggle = Number(req.params.id)
+
+    const msgToToggle = await db("messages").select("*").where("id", idToToggle).first()
+    if (!msgToToggle) return next()
+
+    await db("messages").update({liked: !msgToToggle.liked}).where("id", idToToggle)
+
+    res.redirect("/")
+})
