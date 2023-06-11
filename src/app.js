@@ -29,3 +29,11 @@ app.post("/new-msg", async (req, res) => {
     res.redirect("/")
 })
 
+app.get("/remove-msg/:id", async (req, res) => {
+    const idToRemove = Number(req.params.id)
+
+    await db("messages").delete().where("id", idToRemove)
+
+    res.redirect("/")
+})
+
