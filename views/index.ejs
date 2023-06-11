@@ -27,6 +27,21 @@
         <input type="text" name="text" />
         <button type="submit">Send</button>
       </form>
+
+
+      <script>
+        const ws = new WebSocket("ws://localhost:3000")
+        
+        ws.addEventListener("message", (ev) => {
+          const message = JSON.parse(ev.data)
+          if (message.type === "todos") {  
+            document.getElementById("todos").innerHTML = message.html
+          }
+        })
+      
+      </script>
+      
+
 </body>
 </html>
 
