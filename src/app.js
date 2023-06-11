@@ -6,7 +6,7 @@ export const app = express()
 
 app.set("view engine", "ejs")
 
-const db = knex(knexfile)
+const db = knex(knexfile[process.env.NODE_ENV || 'development'])
 
 app.use(express.urlencoded({extended: true}))
 
