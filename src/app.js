@@ -1,12 +1,12 @@
 import express from "express"
-import knex from "knex"
-import knexfile from "../knexfile.js"
+import { db, getAllMessages } from "../src/db.js"
+
 
 export const app = express()
 
 app.set("view engine", "ejs")
 
-const db = knex(knexfile[process.env.NODE_ENV || 'development'])
+
 
 app.use(express.urlencoded({extended: true}))
 
