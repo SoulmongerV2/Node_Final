@@ -18,4 +18,4 @@ await db("messages").insert({ text: "Message test!!" })
 const response = await supertest(app).get('/')
 
 t.assert(response.text.includes("Message test!!"))
-}
+})
