@@ -12,10 +12,10 @@ await db.migrate.rollback()
 })
 
 
-test.serial('GET / shows list of todos', async (t) => {
+test.serial('GET / shows list of messages', async (t) => {
 await db("messages").insert({ text: "Message test!!" })
 
 const response = await supertest(app).get('/')
 
 t.assert(response.text.includes("Message test!!"))
-})
+}
