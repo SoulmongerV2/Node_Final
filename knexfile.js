@@ -6,5 +6,13 @@ export default {
         },
         useNullAsDefault: false, 
         debug: false
-    }
+    },
+    test: {
+        client: "sqlite3",
+        connection: {
+            filename: ":memory:"
+        },
+        useNullAsDefault: false, 
+        debug: false
+    }, 
 }
