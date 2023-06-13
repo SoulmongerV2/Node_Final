@@ -14,19 +14,19 @@ export const getAllMessages = async () => {
     return messages
 }
 
-export const createUser = async (name, password) => {
+export const createUser = async (username, password) => {
     const salt = crypto.randomBytes(16).toString("hex")
     const hash = crypto.pbkdf2Sync(password, salt, 100000, 64, "sha512").toString("hex")
     const token = crypto.randomBytes(16).toString("hex")
 
-    const [user] = await db("users").insert({ name, salt, hash, token }).returning('*')
+    const [user] = await db("users").insert({ username, salt, hash, token }).returning('*')
 
     return user
 }
 
 
-export const getUser = async (name, password) => {
-    const user = await db("users").where({ name }).first()
+export const getUser = async (username, password) => {
+    const user = await db("users").where({ username }).first()
     if (!user) return null
 
     const salt = user.salt
@@ -35,3 +35,4 @@ export const getUser = async (name, password) => {
 
     return user
 }
+

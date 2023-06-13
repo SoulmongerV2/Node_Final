@@ -12,16 +12,22 @@ await db.migrate.rollback()
 })
 
 test.serial("create new user", async (t) => {
-    const user = await createUser("name", "password")
+    const user = await createUser("username", "password")
   
-    t.is(user.name, "name")
+    t.is(user.username, "username")
     t.not(user.hash, "password")
 })
 
-test.serial("get user by name and password", async (t) => {
-    const user = await createUser('name', '1234')
+test.serial("get user by username and password", async (t) => {
+    const user = await createUser("username", "password")
 
-    t.deepEqual(await getUser('name', '1234'), user)
-    t.notDeepEqual(await getUser('name', 'bad password'), user)
-    t.notDeepEqual(await getUser('bad name', '1234'), user)
+    t.deepEqual(await getUser("username", "password"), user)
+    t.notDeepEqual(await getUser("username", "bad"), user)
+    t.notDeepEqual(await getUser("bad", "password"), user)
+})
+
+test.serial("GET /register shows registration form", async(t) => {
+    const response = await supertest(app).get("/register")
+
+    t.assert(response.text.includes("Registrace"))
 })
