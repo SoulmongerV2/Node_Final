@@ -1,5 +1,5 @@
 import express from "express"
-import { db } from "./database.js"
+import { createUser, db } from "./database.js"
 import { sendMessagesToAllConnections } from "./websockets.js"
 
 
@@ -57,4 +57,14 @@ app.get("/toggle-msg/:id", async (req, res, next) => {
 
 app.get("/register", async (req, res) => {
     res.render("register")
+})
+
+
+app.post("/register", async (req, res) => {
+    const username = req.body.username
+    const password = req.body.password
+
+    await createUser(username, password)
+
+    res.redirect("/")
 })

@@ -31,3 +31,24 @@ test.serial("GET /register shows registration form", async(t) => {
 
     t.assert(response.text.includes("Registrace"))
 })
+
+test.serial("POST /register creates a new user", async (t) => {
+    await supertest(app).post("/register").type("form").send({ 
+        username: "mike", 
+        password: "1234"
+    })
+
+    t.not(await getUser("mike", "1234"), null)
+})
+
+test.serial("username is visible after registration and redirect", async (t) => {
+    const agent = supertest.agent(app)
+
+    const response = await agent.post("/register").type("form").send({ 
+        username: "mike", 
+        password: "1234"
+    })
+    .redirects(1)
+
+    t.assert(response.text.includes("mike"))
+})
