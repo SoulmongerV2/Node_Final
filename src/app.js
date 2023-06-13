@@ -54,3 +54,7 @@ app.get("/toggle-msg/:id", async (req, res, next) => {
 
     res.redirect("/")
 })
+
+app.get("/register", async (req, res) => {
+    res.render("register")
+})
