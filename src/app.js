@@ -110,3 +110,9 @@ app.post("/login", async (req, res) => {
     res.redirect("/")
 })
 
+app.get("/logout", async (req, res) => {
+
+    res.cookie("token", "")
+
+    res.redirect("/")
+})

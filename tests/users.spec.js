@@ -60,14 +60,9 @@ test.serial("username is visible after registration and redirect", async (t) => 
 })
 
 test.serial("username is visible after login and redirect", async (t) => {
-    await supertest(app).post("/register").type("form").send({ 
-        username: "mike", 
-        password: "1234"
-    })
-    
-    t.not(await getUserByPassword("mike", "1234"), null)
-    
     const agent = supertest.agent(app)
+
+    await createUser("mike", "1234")
     
     const response = await agent.post("/login").type("form").send({ 
         username: "mike", 
@@ -76,4 +71,23 @@ test.serial("username is visible after login and redirect", async (t) => {
     .redirects(1)
 
     t.assert(response.text.includes("mike"))
+})
+
+
+test.serial("username is not visible after logout", async (t) => {
+    const agent = supertest.agent(app)
+
+    await createUser("mike", "1234")
+    
+    const response1 = await agent.post("/login").type("form").send({ 
+        username: "mike", 
+        password: "1234"
+    })
+    .redirects(1)
+
+    t.assert(response1.text.includes("mike"))
+
+    const response2 = await supertest(app).get("/logout").redirects(1)
+
+    t.assert(!response2.text.includes("mike"))
 })
