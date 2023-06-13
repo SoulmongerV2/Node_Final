@@ -19,7 +19,11 @@
         <button type="submit">Send</button>
       </form>
 
-      <a href="/register">Registrace</a>
+      <% if (user) { %>
+        <%= user.username %>
+      <% } else { %>
+        <a href="/register">Registrace</a>
+      <% } %>
 
 
       <script>

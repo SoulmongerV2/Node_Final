@@ -36,3 +36,8 @@ export const getUser = async (username, password) => {
     return user
 }
 
+export const getUserByToken = async (token) => {
+    const user = await db("users").where({ token }).first()
+
+    return user
+}
