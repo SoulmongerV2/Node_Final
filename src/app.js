@@ -6,6 +6,15 @@ import cookieParser from "cookie-parser"
 
 export const app = express()
 
+const auth = (req, res, next) => {
+    if (res.locals.user) {
+        next()
+    } else {
+        res.redirect("/register")
+    }
+}
+
+
 app.set("view engine", "ejs")
 
 app.use(express.static("public"))
@@ -26,7 +35,7 @@ app.use(async (req, res, next) => {
 
 
 
-app.get("/", async (req, res) => {
+app.get("/", auth, async (req, res) => {
 
     const messages = await db("messages").select("*")
 
@@ -85,3 +94,4 @@ app.post("/register", async (req, res) => {
 
     res.redirect("/")
 })
+
