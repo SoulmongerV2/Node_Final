@@ -1,5 +1,5 @@
 import express from "express"
-import { createUser, db, getUser, getUserByToken } from "./database.js"
+import { createUser, db, getUserByPassword, getUserByToken } from "./database.js"
 import { sendMessagesToAllConnections } from "./websockets.js"
 import cookieParser from "cookie-parser"
 
@@ -103,8 +103,8 @@ app.post("/login", async (req, res) => {
     const username = req.body.username
     const password = req.body.password
 
-    const user = await getUser(username, password)
-    
+    const user = await getUserByPassword(username, password)
+
     res.cookie("token", user.token)
 
     res.redirect("/")

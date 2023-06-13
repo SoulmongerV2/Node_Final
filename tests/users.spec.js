@@ -1,6 +1,6 @@
 import test from "ava"
 import supertest from "supertest"
-import { db, createUser, getUser } from "../src/database.js"
+import { db, createUser, getUserByPassword } from "../src/database.js"
 import { app } from "../src/app.js"
 
 test.beforeEach(async () => {
@@ -21,9 +21,9 @@ test.serial("create new user", async (t) => {
 test.serial("get user by username and password", async (t) => {
     const user = await createUser("username", "password")
 
-    t.deepEqual(await getUser("username", "password"), user)
-    t.notDeepEqual(await getUser("username", "bad"), user)
-    t.notDeepEqual(await getUser("bad", "password"), user)
+    t.deepEqual(await getUserByPassword("username", "password"), user)
+    t.notDeepEqual(await getUserByPassword("username", "bad"), user)
+    t.notDeepEqual(await getUserByPassword("bad", "password"), user)
 })
 
 test.serial("GET /register shows registration form", async(t) => {
@@ -44,7 +44,7 @@ test.serial("POST /register creates a new user", async (t) => {
         password: "1234"
     })
 
-    t.not(await getUser("mike", "1234"), null)
+    t.not(await getUserByPassword("mike", "1234"), null)
 })
 
 test.serial("username is visible after registration and redirect", async (t) => {
@@ -65,7 +65,7 @@ test.serial("username is visible after login and redirect", async (t) => {
         password: "1234"
     })
     
-    t.not(await getUser("mike", "1234"), null)
+    t.not(await getUserByPassword("mike", "1234"), null)
     
     const agent = supertest.agent(app)
     

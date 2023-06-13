@@ -25,7 +25,7 @@ export const createUser = async (username, password) => {
 }
 
 
-export const getUser = async (username, password) => {
+export const getUserByPassword = async (username, password) => {
     const user = await db("users").where({ username }).first()
     if (!user) return null
 
