@@ -26,15 +26,14 @@ export const sendMessagesToAllConnections = async () => {
         messages,
     })
 
-    for (const connection of connections) {
-        const message = {
-            type: "messages",
-            html,
-        }
-
-        const json = JSON.stringify(message)
-
-        connection.send(json)
+    const message = {
+        type: "messages",
+        html: html
     }
 
+    for (const connection of connections) {
+        const json = JSON.stringify(message)
+        connection.send(json)
+    }
 }
+
