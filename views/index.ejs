@@ -21,8 +21,10 @@
 
       <% if (user) { %>
         <%= user.username %>
+        <a href="/logout">Odhlásit se</a>
       <% } else { %>
         <a href="/register">Registrace</a>
+        <a href="/login">Login</a>
       <% } %>
 
 

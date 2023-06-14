@@ -1,10 +1,19 @@
 import express from "express"
-import { createUser, db, getUserByToken } from "./database.js"
+import { createUser, db, getUserByPassword, getUserByToken } from "./database.js"
 import { sendMessagesToAllConnections } from "./websockets.js"
 import cookieParser from "cookie-parser"
 
 
 export const app = express()
+
+const auth = (req, res, next) => {
+    if (res.locals.user) {
+        next()
+    } else {
+        res.redirect("/register")
+    }
+}
+
 
 app.set("view engine", "ejs")
 
@@ -82,6 +91,28 @@ app.post("/register", async (req, res) => {
     const user = await createUser(username, password)
 
     res.cookie("token", user.token)
+
+    res.redirect("/")
+})
+
+app.get("/login", async (req, res) => {
+    res.render("login")
+})
+
+app.post("/login", async (req, res) => {
+    const username = req.body.username
+    const password = req.body.password
+
+    const user = await getUserByPassword(username, password)
+
+    res.cookie("token", user.token)
+
+    res.redirect("/")
+})
+
+app.get("/logout", async (req, res) => {
+
+    res.cookie("token", "")
 
     res.redirect("/")
 })
