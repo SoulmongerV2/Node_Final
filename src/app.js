@@ -1,18 +1,12 @@
 import express from "express"
-import { createUser, db, getUserByPassword, getUserByToken } from "./database.js"
-import { sendMessagesToAllConnections } from "./websockets.js"
 import cookieParser from "cookie-parser"
+import { db } from "./database.js"
 
-
+import { router as messagesRouter } from "./routes/messages.js"
+import { router as usersRouter } from "./routes/users.js" 
+import loadUser from "./middlewares/loadUser.js"
+import requireAuth from "./middlewares/requireAuth.js"
 export const app = express()
-
-const auth = (req, res, next) => {
-    if (res.locals.user) {
-        next()
-    } else {
-        res.redirect("/register")
-    }
-}
 
 
 app.set("view engine", "ejs")
@@ -21,18 +15,7 @@ app.use(express.static("public"))
 app.use(express.urlencoded({extended: true}))
 app.use(cookieParser())
 
-app.use(async (req, res, next) => {
-    const token = req.cookies.token
-
-    if(token) {
-        res.locals.user = await getUserByToken(token)
-    } else {
-        res.locals.user = null
-    }
-
-    next()
-})
-
+app.use(loadUser)
 
 
 app.get("/", async (req, res) => {
@@ -44,75 +27,8 @@ app.get("/", async (req, res) => {
     })
 })
 
-app.post("/new-msg", async (req, res) => {
-    const newMsg = {
-        text: req.body.text
-    }
-
-    await db("messages").insert(newMsg)
-
-    sendMessagesToAllConnections()
-
-    res.redirect("/")
-})
-
-app.get("/remove-msg/:id", async (req, res) => {
-    const idToRemove = Number(req.params.id)
-
-    await db("messages").delete().where("id", idToRemove)
-
-    sendMessagesToAllConnections()
-
-    res.redirect("/")
-})
-
-app.get("/toggle-msg/:id", async (req, res, next) => {
-    const idToToggle = Number(req.params.id)
-
-    const msgToToggle = await db("messages").select("*").where("id", idToToggle).first()
-    if (!msgToToggle) return next()
-
-    await db("messages").update({liked: !msgToToggle.liked}).where("id", idToToggle)
-
-    sendMessagesToAllConnections()
-
-    res.redirect("/")
-})
-
-app.get("/register", async (req, res) => {
-    res.render("register")
-})
 
 
-app.post("/register", async (req, res) => {
-    const username = req.body.username
-    const password = req.body.password
 
-    const user = await createUser(username, password)
-
-    res.cookie("token", user.token)
-
-    res.redirect("/")
-})
-
-app.get("/login", async (req, res) => {
-    res.render("login")
-})
-
-app.post("/login", async (req, res) => {
-    const username = req.body.username
-    const password = req.body.password
-
-    const user = await getUserByPassword(username, password)
-
-    res.cookie("token", user.token)
-
-    res.redirect("/")
-})
-
-app.get("/logout", async (req, res) => {
-
-    res.cookie("token", "")
-
-    res.redirect("/")
-})
+app.use(messagesRouter)
+app.use(usersRouter)

@@ -3,6 +3,7 @@ import supertest from "supertest"
 import { db } from "../src/database.js"
 import { app } from "../src/app.js"
 
+
 test.beforeEach(async () => {
     await db.migrate.latest()
   })
