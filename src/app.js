@@ -18,7 +18,7 @@ app.use(cookieParser())
 app.use(loadUser)
 
 
-app.get("/", requireAuth, async (req, res) => {
+app.get("/", async (req, res) => {
 
     const messages = await db("messages").select("*")
 

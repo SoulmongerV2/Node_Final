@@ -1,6 +1,7 @@
 import test from "ava"
 import supertest from "supertest"
-import { db, createUser, getUserByPassword } from "../src/database.js"
+import { db } from "../src/database.js"
+import { createUser, getUserByPassword } from "../src/database/users.js"
 import { app } from "../src/app.js"
 
 test.beforeEach(async () => {
