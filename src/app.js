@@ -1,8 +1,8 @@
 import express from "express"
-import { createUser, db, getUserByPassword, getUserByToken } from "./database.js"
-import { sendMessagesToAllConnections } from "./websockets.js"
 import cookieParser from "cookie-parser"
-
+import { db } from "./database.js"
+import { createUser, getUserByPassword, getUserByToken } from "../src/database/users.js"
+import { router as messagesRouter } from "./routes/messages.js"
 
 export const app = express()
 
@@ -34,7 +34,6 @@ app.use(async (req, res, next) => {
 })
 
 
-
 app.get("/", async (req, res) => {
 
     const messages = await db("messages").select("*")
@@ -44,45 +43,10 @@ app.get("/", async (req, res) => {
     })
 })
 
-app.post("/new-msg", async (req, res) => {
-    const newMsg = {
-        text: req.body.text
-    }
-
-    await db("messages").insert(newMsg)
-
-    sendMessagesToAllConnections()
-
-    res.redirect("/")
-})
-
-app.get("/remove-msg/:id", async (req, res) => {
-    const idToRemove = Number(req.params.id)
-
-    await db("messages").delete().where("id", idToRemove)
-
-    sendMessagesToAllConnections()
-
-    res.redirect("/")
-})
-
-app.get("/toggle-msg/:id", async (req, res, next) => {
-    const idToToggle = Number(req.params.id)
-
-    const msgToToggle = await db("messages").select("*").where("id", idToToggle).first()
-    if (!msgToToggle) return next()
-
-    await db("messages").update({liked: !msgToToggle.liked}).where("id", idToToggle)
-
-    sendMessagesToAllConnections()
-
-    res.redirect("/")
-})
 
 app.get("/register", async (req, res) => {
     res.render("register")
 })
-
 
 app.post("/register", async (req, res) => {
     const username = req.body.username
@@ -116,3 +80,5 @@ app.get("/logout", async (req, res) => {
 
     res.redirect("/")
 })
+
+app.use(messagesRouter)
