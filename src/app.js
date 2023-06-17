@@ -1,8 +1,9 @@
 import express from "express"
 import cookieParser from "cookie-parser"
 import { db } from "./database.js"
-import { createUser, getUserByPassword, getUserByToken } from "../src/database/users.js"
+import {  getUserByToken } from "../src/database/users.js"
 import { router as messagesRouter } from "./routes/messages.js"
+import { router as usersRouter } from "./routes/users.js" 
 
 export const app = express()
 
@@ -44,41 +45,7 @@ app.get("/", async (req, res) => {
 })
 
 
-app.get("/register", async (req, res) => {
-    res.render("register")
-})
 
-app.post("/register", async (req, res) => {
-    const username = req.body.username
-    const password = req.body.password
-
-    const user = await createUser(username, password)
-
-    res.cookie("token", user.token)
-
-    res.redirect("/")
-})
-
-app.get("/login", async (req, res) => {
-    res.render("login")
-})
-
-app.post("/login", async (req, res) => {
-    const username = req.body.username
-    const password = req.body.password
-
-    const user = await getUserByPassword(username, password)
-
-    res.cookie("token", user.token)
-
-    res.redirect("/")
-})
-
-app.get("/logout", async (req, res) => {
-
-    res.cookie("token", "")
-
-    res.redirect("/")
-})
 
 app.use(messagesRouter)
+app.use(usersRouter)
