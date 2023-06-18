@@ -7,6 +7,16 @@
     <title>Document</title>
 </head>
 <body>
+  <div id="chatrooms">
+    <%- include("_chatrooms") %>
+  </div>
+
+    <form action="/new-chatroom" method="post">
+      <input type="text" name="name" />
+      <button type="submit">Create</button>
+    </form>
+
+    <h2>Zprávy</h2>
 
     <div id="messages">
       <%- include("_messages") %>
@@ -15,13 +25,26 @@
       
 
     <form action="/new-msg" method="post">
-        <input type="text" name="text" />
-        <button type="submit">Send</button>
-      </form>
+      <input type="text" name="text" />
+      <button type="submit">Send</button>
+    </form>
 
       <% if (user) { %>
         <%= user.username %>
         <a href="/logout">Odhlásit se</a>
+      <h3>Join Chatroom:</h3>
+      <form action="/join-chatroom" method="post">
+        <select name="chatroomId">
+          <% for (const chatroom of chatrooms) { %>
+            <option value="<%= chatroom.id %>"><%= chatroom.name %></option>
+          <% } %>
+        </select>
+        <button type="submit">Join</button>
+      </form>
+
+
+
+
       <% } else { %>
         <a href="/register">Registrace</a>
         <a href="/login">Login</a>

@@ -7,8 +7,11 @@ export const router = express.Router()
 
 
 router.post("/new-msg", async (req, res) => {
+    
     const newMsg = {
-        text: req.body.text
+        text: req.body.text,
+        chatroomId: req.body.chatroomId,
+        userId: req.body.userId
     }
 
     await db("messages").insert(newMsg)

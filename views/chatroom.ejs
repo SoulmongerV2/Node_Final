@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chatroom</title>
+</head>
+<body>
+  <h1><Chatroom></h1>
+
+  <ul>
+    <% for (const message of messages) { %>
+      <li><%= message.text %></li>
+    <% } %>
+  </ul>
+
+  <form action="/new-msg" method="post">
+    <input type="hidden" name="userId" value="<%= user.id %>" />
+    <input type="hidden" name="chatroomId" value="<%= chatroom.id %>" />
+    <input type="text" name="text" />
+    <button type="submit">Send</button>
+  </form>
+</body>
+</html>
