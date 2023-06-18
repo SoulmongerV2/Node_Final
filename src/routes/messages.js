@@ -7,6 +7,8 @@ export const router = express.Router()
 
 
 router.post("/new-msg", async (req, res) => {
+    
+
     const newMsg = {
         text: req.body.text
     }

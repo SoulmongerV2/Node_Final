@@ -4,6 +4,7 @@ import { db } from "./database.js"
 
 import { router as messagesRouter } from "./routes/messages.js"
 import { router as usersRouter } from "./routes/users.js" 
+import { router as chatroomsRouter } from "./routes/chatrooms.js" 
 import loadUser from "./middlewares/loadUser.js"
 import requireAuth from "./middlewares/requireAuth.js"
 export const app = express()
@@ -21,14 +22,16 @@ app.use(loadUser)
 app.get("/", async (req, res) => {
 
     const messages = await db("messages").select("*")
+    const chatrooms = await db("chatrooms").select("*")
 
     res.render("index", {
-        messages: messages
+        messages: messages,
+        chatrooms: chatrooms
     })
 })
 
 
 
-
+app.use(chatroomsRouter)
 app.use(messagesRouter)
 app.use(usersRouter)
