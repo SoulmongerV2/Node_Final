@@ -10,7 +10,8 @@ router.post("/new-msg", async (req, res) => {
     
     const newMsg = {
         text: req.body.text,
-        chatroomId: req.body.chatroomId
+        chatroomId: req.body.chatroomId,
+        userId: req.body.userId
     }
 
     await db("messages").insert(newMsg)
