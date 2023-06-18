@@ -33,10 +33,14 @@ router.get("/delete-chatroom/:id", async (req, res) => {
 
 router.get("/chatroom/:id", async (req, res) => {
     const chatroomId = Number(req.params.id)
-  
-    const messages = await getAllMessagesByChatroom(chatroomId)
 
-    res.render("chatroom", { messages }); 
+    const messages = await getAllMessagesByChatroom(chatroomId)
+    const chatroom = await db("chatrooms").where("id", chatroomId).first();
+
+    res.render("chatroom", {
+        chatroom, 
+        messages 
+    })
 
   })
 
