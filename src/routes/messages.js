@@ -1,6 +1,7 @@
 import express from "express"
 import { db } from "../database.js"
 import { sendMessagesToAllConnections } from "../websockets.js"
+import { LOBBY_CHATROOM_ID } from "../app.js"
 
 
 export const router = express.Router()
@@ -13,6 +14,24 @@ router.post("/new-msg", async (req, res) => {
         chatroomId: req.body.chatroomId,
         userId: req.body.userId
     }
+    
+    await db("messages").insert(newMsg)
+
+    sendMessagesToAllConnections()
+
+    res.redirect("/")
+})
+
+router.post("/new-lobbymsg", async (req, res) => {
+    
+    const chatroomId = LOBBY_CHATROOM_ID
+
+    const newMsg = {
+        text: req.body.text,
+        chatroomId: chatroomId,
+        userId: req.body.userId
+    }
+
 
     await db("messages").insert(newMsg)
 

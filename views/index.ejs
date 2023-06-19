@@ -18,13 +18,15 @@
 
     <h2>Zprávy</h2>
 
-    <div id="messages">
-      <%- include("_messages") %>
+    <div id="lobby-messages">
+      <% for (const msg of lobbyChatroomMessages) { %>
+        <div><%= msg.text %></div>
+      <% } %>
     </div>
 
       
 
-    <form action="/new-msg" method="post">
+    <form action="/new-lobbymsg" method="post">
       <input type="text" name="text" />
       <button type="submit">Send</button>
     </form>
