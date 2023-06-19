@@ -9,7 +9,7 @@ import requireAuth from "./middlewares/requireAuth.js"
 import { getAllMessagesByChatroom } from "./database/messages.js"
 
 export const app = express()
-export const LOBBY_CHATROOM_ID = 7
+//export const LOBBY_CHATROOM_ID = 7
 
 
 app.set("view engine", "ejs")
@@ -20,7 +20,7 @@ app.use(cookieParser())
 
 app.use(loadUser)
 
-
+/*
 async function initializeLobbyChatroom() {
     const lobbyChatroom = {
       name: "Lobby Chatroom",
@@ -45,18 +45,18 @@ async function initializeLobbyChatroom() {
     console.error("Error initializing default chatroom:", error);
   });
   
-
+*/
 
 app.get("/", async (req, res) => {
     const chatrooms = await db("chatrooms").select("*")
 
-    const lobbyChatroom = await db("chatrooms").where("id", LOBBY_CHATROOM_ID).first()
-    const lobbyChatroomMessages = await getAllMessagesByChatroom(LOBBY_CHATROOM_ID)
+    //const lobbyChatroom = await db("chatrooms").where("id", LOBBY_CHATROOM_ID).first()
+    //const lobbyChatroomMessages = await getAllMessagesByChatroom(LOBBY_CHATROOM_ID)
     
     res.render("index", {
         chatrooms: chatrooms,
-        lobbyChatroom: lobbyChatroom,
-        lobbyChatroomMessages: lobbyChatroomMessages
+        //lobbyChatroom: lobbyChatroom,
+        //lobbyChatroomMessages: lobbyChatroomMessages
     })
 })
 

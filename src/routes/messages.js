@@ -1,7 +1,7 @@
 import express from "express"
 import { db } from "../database.js"
 import { sendMessagesToAllConnections } from "../websockets.js"
-import { LOBBY_CHATROOM_ID } from "../app.js"
+//import { LOBBY_CHATROOM_ID } from "../app.js"
 
 
 export const router = express.Router()
@@ -21,7 +21,7 @@ router.post("/new-msg", async (req, res) => {
 
     res.redirect("/")
 })
-
+/*
 router.post("/new-lobbymsg", async (req, res) => {
     
     const chatroomId = LOBBY_CHATROOM_ID
@@ -39,7 +39,7 @@ router.post("/new-lobbymsg", async (req, res) => {
 
     res.redirect("/")
 })
-
+*/
 router.get("/remove-msg/:id", async (req, res) => {
     const idToRemove = Number(req.params.id)
 
