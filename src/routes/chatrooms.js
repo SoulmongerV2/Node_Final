@@ -1,7 +1,8 @@
 import express from "express" 
 import { db } from "../database.js" 
 import { sendMessagesToAllConnections } from "../websockets.js" 
-import { joinUserToChatroom, getAllMessagesByChatroom } from "../database/chatrooms.js" 
+import { joinUserToChatroom } from "../database/chatrooms.js" 
+import { getAllMessagesByChatroom } from "../database/messages.js"
 //import { requireAuth } from "../middlewares/requireAuth.js" 
 
 export const router = express.Router() 

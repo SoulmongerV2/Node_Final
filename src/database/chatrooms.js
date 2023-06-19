@@ -7,11 +7,6 @@ await db("user_chatroom").insert({
 })
 }
 
-export const getAllMessagesByChatroom = async (chatroomId) => {
-    const messages = await db("messages").select("*").where("chatroomId", chatroomId);
-  
-    return messages
-  }
 
 
 
