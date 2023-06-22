@@ -18,8 +18,7 @@ export const up = async function(knex) {
         .references("id")
         .inTable("chatrooms")
         .onDelete("CASCADE")
-        .onUpdate("CASCADE");
-      // Add any additional columns you need
+        .onUpdate("CASCADE")
     });
   };
   
