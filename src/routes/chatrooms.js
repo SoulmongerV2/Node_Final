@@ -27,6 +27,7 @@ router.get("/delete-chatroom/:id", async (req, res) => {
     const idToRemove = Number(req.params.id)
 
     await db("chatrooms").delete().where("id", idToRemove)
+    await db("messages").delete().where("chatroomId", idToRemove)
 
     sendMessagesToAllConnections()
 
@@ -90,9 +91,8 @@ router.post("/join-chatroom/", async (req, res) => {
 
     const { salt, hash } = chatroom
     const enteredHash = crypto.pbkdf2Sync(password, salt, 100000, 64, "sha512").toString("hex")
-
+    //incorrect password
     if (hash !== enteredHash) {
-      // Handle incorrect password case
       return res.redirect(`/join-chatroom/${chatroomId}`);
     }
 

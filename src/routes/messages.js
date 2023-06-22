@@ -19,7 +19,7 @@ router.post("/new-msg", async (req, res) => {
 
     sendMessagesToAllConnections()
 
-    res.redirect("/")
+    res.redirect("back")
 })
 /*
 router.post("/new-lobbymsg", async (req, res) => {
