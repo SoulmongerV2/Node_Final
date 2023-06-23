@@ -48,7 +48,9 @@
         ws.addEventListener("message", (ev) => {
           const message = JSON.parse(ev.data)
           document.getElementById("messages").innerHTML = message.html
+          document.getElementById("userCount").textContent = `Connected Users: ${message.userCount}`
         })
+        
         
       </script>
 </body>

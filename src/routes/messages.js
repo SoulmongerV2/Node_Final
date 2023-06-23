@@ -47,7 +47,7 @@ router.get("/remove-msg/:id", async (req, res) => {
 
     sendMessagesToAllConnections()
 
-    res.redirect("/")
+    res.redirect("back")
 })
 
 router.get("/toggle-msg/:id", async (req, res, next) => {
@@ -60,6 +60,6 @@ router.get("/toggle-msg/:id", async (req, res, next) => {
 
     sendMessagesToAllConnections()
 
-    res.redirect("/")
+    res.redirect("back")
 })
 

@@ -19,6 +19,7 @@ export const createWebSocketServer = (server) => {
     })
 }
 
+
 export const sendMessagesToAllConnections = async () => {
     const messages = await db("messages").select("*")
 
@@ -36,4 +37,5 @@ export const sendMessagesToAllConnections = async () => {
         connection.send(json)
     }
 }
+
 
