@@ -2,7 +2,8 @@ import express from "express"
 import { db } from "../database.js" 
 import { sendMessagesToAllConnections } from "../websockets.js" 
 import { createChatroom, joinUserToChatroom } from "../database/chatrooms.js" 
-import { getAllMessagesByChatroom } from "../database/messages.js"
+import { getAllMessagesByChatroom, getMessagesWithUsers } from "../database/messages.js"
+import { getUserById } from "../database/users.js"
 //import { requireAuth } from "../middlewares/requireAuth.js" 
 import crypto from "crypto"
 
@@ -39,11 +40,13 @@ router.get("/chatroom/:id", async (req, res) => {
     const chatroomId = Number(req.params.id)
 
     const messages = await getAllMessagesByChatroom(chatroomId)
+    const messagesWithUsers = await getMessagesWithUsers(messages)
     const chatroom = await db("chatrooms").where("id", chatroomId).first();
 
     res.render("chatroom", {
         chatroom, 
-        messages 
+        messagesWithUsers,
+        getUserById
     })
 
   })

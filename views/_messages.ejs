@@ -1,11 +1,14 @@
 <ul style="list-style-type: none">
-    <% for (const msg of messages) { %>
+    <% for (const msg of messagesWithUsers) { %>
       <li class="messages-item">
         <%= msg.text %>
         <a href="/remove-msg/<%= msg.id %>">Remove</a>
         <a href="/toggle-msg/<%= msg.id %>">
           <%= msg.liked ? 'Liked' : 'Unliked' %>
         </a>
+        <%= msg.username %>
+        <%= msg.chatroomId %>
+        <%= msg.createdAt.split(' ')[1] %>
       </li>
       <% } %>
   </ul>
