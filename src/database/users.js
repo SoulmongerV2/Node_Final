@@ -24,6 +24,11 @@ export const getUserByPassword = async (username, password) => {
 
 export const getUserByToken = async (token) => {
     const user = await db("users").where({ token }).first()
-
     return user
 }
+
+export const getUserById = async (userId) => {
+    const user = await db("users").where({ id: userId }).first()
+    console.log(user)
+    return user
+  }
