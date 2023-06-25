@@ -26,6 +26,6 @@ export const getAllMessagesByChatroom = async (chatroomId) => {
     )
     
   
-    return messagesWithUsers;
-  };
+    return messagesWithUsers
+  }
 

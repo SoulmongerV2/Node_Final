@@ -19,6 +19,10 @@
 
     <h2>Zprávy</h2>
 
+    <div id="userCount">
+      <h1>User Count</h1>
+    </div>
+
 
       <% if (user) { %>
         <%= user.username %>
@@ -48,13 +52,31 @@
         ws.addEventListener("message", (ev) => {
           const message = JSON.parse(ev.data)
           document.getElementById("messages").innerHTML = message.html
-          document.getElementById("userCount").textContent = `Connected Users: ${message.userCount}`
         })
-        
-        
+
+        ws.addEventListener("message", (ev) => {
+        const message = JSON.parse(ev.data);
+
+        if (message.type === "messages") {
+          document.getElementById("messages").innerHTML = message.html;
+        } else if (message.type === "userInformation") {
+          document.getElementById("userCount").innerHTML = `<h2>Connected Users: ${message.userCount}</h2>`;
+
+          // Display the list of connected users
+          const userList = document.getElementById("userList");
+          userList.innerHTML = "";
+          for (const user of message.connectedUsers) {
+            const listItem = document.createElement("li");
+            listItem.textContent = `User: ${user.userId}, Chatroom: ${user.chatroomId}`;
+            userList.appendChild(listItem);
+          }
+        }
+      })
+
       </script>
 </body>
 </html>
+
 
 
 
