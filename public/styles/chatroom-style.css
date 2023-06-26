@@ -2,14 +2,38 @@ div {
     background-color: white;
 }
 
+.messages-area {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border: solid 1px red;
+}
 .messages-item {
     background-color: honeydew;
     border: solid 1px black;
     border-radius: 5px;
+    margin-left: auto;
 }
+
+.own-message{
+    align-self: flex-end;
+    background-color: lightblue;
+    border: solid 1px black;
+    border-radius: 5px;
+    margin-right: auto;
+}
+
+
+
 
 .chatrooms-item {
     background-color: honeydew;
     border: solid 1px black;
     border-radius: 5px;
+}
+
+
+.bottom-area {
+    display:flex;
+    flex-direction: column;
 }

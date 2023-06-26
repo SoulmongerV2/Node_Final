@@ -57,6 +57,7 @@ router.get("/toggle-msg/:id", async (req, res, next) => {
     if (!msgToToggle) return next()
 
     await db("messages").update({liked: !msgToToggle.liked}).where("id", idToToggle)
+    
 
     sendMessagesToAllConnections()
 
