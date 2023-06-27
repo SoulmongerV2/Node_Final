@@ -1,13 +1,18 @@
-<ul style="list-style-type: none">
+
+  <ul style="list-style-type: none">
     <% for (const msg of messagesWithUsers) { %>
-      <li class="messages-item">
-        <%= msg.text %>
-        <a href="/remove-msg/<%= msg.id %>">Remove</a>
-        <a href="/toggle-msg/<%= msg.id %>">
-          <%= msg.liked ? 'Liked' : 'Unliked' %>
-        </a>
-        <%= msg.username %>
-        <%= msg.createdAt.split(' ')[1] %>
+      <li>
+        <div class="messages-item 
+        <% if (msg.userId === userId) { %>own-message<% } %>">
+          <%= msg.text %>
+  
+          <a href="/remove-msg/<%= msg.id %>">Remove</a>
+          <a href="/toggle-msg/<%= msg.id %>">
+            <%= msg.liked ? 'Liked' : 'Unliked' %>
+          </a>
+          <%= msg.username %>
+          <%= msg.createdAt.split(' ')[1] %>
+        </div>
       </li>
-      <% } %>
+    <% } %>
   </ul>

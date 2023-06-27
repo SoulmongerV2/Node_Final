@@ -1,70 +1,128 @@
-import { WebSocketServer } from "ws";
-import ejs from "ejs";
-import { db } from "./database.js";
+// _message.ejs with styles
 
-/** @type {Map<WebSocket, string>} */
-const chatroomSockets = new Map(); // Map WebSocket connections to their corresponding chatrooms
 
-export const createWebSocketServer = (server) => {
-  const wss = new WebSocketServer({ server });
 
-  wss.on("connection", (ws) => {
-    console.log("New connection");
+  <ul style="list-style-type: none">
+    <% for (const msg of messagesWithUsers) { %>
+      <li>
+        <div class="messages-item 
+        <% if (msg.userId === userId) { %>own-message<% } %>">
+          <%= msg.text %>
+  
+          <a href="/remove-msg/<%= msg.id %>">Remove</a>
+          <a href="/toggle-msg/<%= msg.id %>">
+            <%= msg.liked ? 'Liked' : 'Unliked' %>
+          </a>
+          <%= msg.username %>
+          <%= msg.createdAt.split(' ')[1] %>
+        </div>
+      </li>
+    <% } %>
+  </ul>
 
-    ws.on("message", async (message) => {
-      const { chatroomId, data } = JSON.parse(message);
-      
-      // Handle different types of messages (e.g., 'join', 'message')
-      if (data.type === "join") {
-        chatroomSockets.set(ws, chatroomId);
-        // Perform necessary operations when a user joins a chatroom
-        // (e.g., add the user to the list of connected users)
-        console.log("User joined chatroom:", chatroomId);
-      } else if (data.type === "message") {
-        // Broadcast the message to all connected users in the same chatroom
-        const chatroom = chatroomSockets.get(ws);
-        const messages = await db("messages").insert({ chatroomId, text: data.text, createdAt: new Date() }).returning("*");
-        const html = await ejs.renderFile("views/_messages.ejs", {
-          messages,
-        });
+  //without 
+  <ul style="list-style-type: none">
+    <% for (const msg of messagesWithUsers) { %>
+      <li class="messages-item">
+        <%= msg.text %>
+        <a href="/remove-msg/<%= msg.id %>">Remove</a>
+        <a href="/toggle-msg/<%= msg.id %>">
+          <%= msg.liked ? 'Liked' : 'Unliked' %>
+        </a>
+        <%= msg.username %>
+        <%= msg.createdAt.split(' ')[1] %>
+      </li>
+      <% } %>
+  </ul>
+------
 
-        const broadcastMessage = {
-          type: "messages",
-          html: html,
-        };
+//sendMessagesToAllConnections with userId
+export const sendMessagesToAllConnections = async (userId) => {
+    const messages = await db("messages").select("*")
+    const messagesWithUsers = await getMessagesWithUsers(messages)
 
-        for (const connection of wss.clients) {
-          if (chatroomSockets.get(connection) === chatroom) {
-            const json = JSON.stringify(broadcastMessage);
-            connection.send(json);
-          }
-        }
-      }
-    });
+    const html = await ejs.renderFile("views/_messages.ejs", {
+        messagesWithUsers,
+        userId
+    })
 
-    ws.on("close", () => {
-      chatroomSockets.delete(ws);
-      console.log("Closed connection");
-    });
-  });
-};
+    const message = {
+        type: "messages",
+        html: html
+    }
 
-export const sendMessagesToAllConnections = async () => {
-  // This function can be modified as per your requirements
-  // It sends messages to all connections, but you can adapt it to send messages to specific chatrooms
-  const messages = await db("messages").select("*");
+    for (const connection of connections) {
+        const json = JSON.stringify(message)
+        connection.send(json)
+    }
+    console.log(userId)
+}
 
-  const html = await ejs.renderFile("views/_messages.ejs", {
-    messages,
-  });
 
-  const message = {
-    type: "messages",
-    html: html,
-  };
+//create Websocket server - adding userId to Websocket
 
-  for (const connection of chatroomSockets.keys()) {
-    const json = JSON.stringify(message);
-    connection.send(json);
-  }
-};
+export const createWebSocketServer = (server, userId) => {
+    const wss = new WebSocketServer({ server })
+
+    wss.on("connection", (ws) => {
+        
+        ws.userId = userId
+        console.log(userId)
+
+        connections.add(ws)
+        console.log("New connection", connections.size)
+        //console.log(request.url)
+        sendUserInfoToAllConnections("A user has joined")
+        
+
+        ws.on("close", () => {
+            connections.delete(ws)
+            console.log("Closed connection", connections.size)
+            sendUserInfoToAllConnections("A user has disconnected")
+        })
+    })
+}
+
+
+//get chatroom router with userId
+
+router.get("/chatroom/:id", async (req, res) => {
+    const chatroomId = Number(req.params.id)
+    const userId = res.locals.user.id
+
+    const messages = await getAllMessagesByChatroom(chatroomId)
+    const messagesWithUsers = await getMessagesWithUsers(messages)
+    const chatroom = await db("chatrooms").where("id", chatroomId).first()
+    
+
+    res.render("chatroom", {
+        chatroom, 
+        messagesWithUsers,
+        userId
+    })
+
+  })
+
+//
+create ws server with annoucement
+
+  export const createWebSocketServer = (server) => {
+    const wss = new WebSocketServer({ server })
+
+    wss.on("connection", (ws) => {
+        
+
+        connections.add(ws)
+        console.log("New connection", connections.size)
+        //console.log(request.url)
+        sendUserInfoToAllConnections("A user has joined")
+        
+
+        ws.on("close", () => {
+            connections.delete(ws)
+            console.log("Closed connection", connections.size)
+            sendUserInfoToAllConnections("A user has disconnected")
+        })
+    })
+}
+

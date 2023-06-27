@@ -8,6 +8,8 @@ export const router = express.Router()
 
 
 router.post("/new-msg", async (req, res) => {
+
+    const userId = res.locals.user.id
     
     const newMsg = {
         text: req.body.text,
@@ -17,29 +19,11 @@ router.post("/new-msg", async (req, res) => {
     
     await db("messages").insert(newMsg)
 
-    sendMessagesToAllConnections()
+    sendMessagesToAllConnections(userId)
 
     res.redirect("back")
 })
-/*
-router.post("/new-lobbymsg", async (req, res) => {
-    
-    const chatroomId = LOBBY_CHATROOM_ID
 
-    const newMsg = {
-        text: req.body.text,
-        chatroomId: chatroomId,
-        userId: req.body.userId
-    }
-
-
-    await db("messages").insert(newMsg)
-
-    sendMessagesToAllConnections()
-
-    res.redirect("/")
-})
-*/
 router.get("/remove-msg/:id", async (req, res) => {
     const idToRemove = Number(req.params.id)
 

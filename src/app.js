@@ -20,43 +20,15 @@ app.use(cookieParser())
 
 app.use(loadUser)
 
-/*
-async function initializeLobbyChatroom() {
-    const lobbyChatroom = {
-      name: "Lobby Chatroom",
-    };
-  
-    
-    const existingLobbyChatroom = await db("chatrooms")
-      .where("name", lobbyChatroom.name)
-      .first();
-  
-    // Create the default chatroom if it doesn't exist
-    if (!existingLobbyChatroom) {
-      await db("chatrooms").insert(lobbyChatroom);
-      console.log("Default chatroom created.");
-    } else {
-      console.log("Default chatroom already exists.");
-    }
-  }
-  
-  // Call the initialization function when the application starts
-  initializeLobbyChatroom().catch((error) => {
-    console.error("Error initializing default chatroom:", error);
-  });
-  
-*/
+
 
 app.get("/", async (req, res) => {
     const chatrooms = await db("chatrooms").select("*")
 
-    //const lobbyChatroom = await db("chatrooms").where("id", LOBBY_CHATROOM_ID).first()
-    //const lobbyChatroomMessages = await getAllMessagesByChatroom(LOBBY_CHATROOM_ID)
+
     
     res.render("index", {
         chatrooms: chatrooms,
-        //lobbyChatroom: lobbyChatroom,
-        //lobbyChatroomMessages: lobbyChatroomMessages
     })
 })
 

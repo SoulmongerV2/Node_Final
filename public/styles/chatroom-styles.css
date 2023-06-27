@@ -1,0 +1,15 @@
+div {
+    background-color: white;
+}
+
+.messages-item {
+    background-color: honeydew;
+    border: solid 1px black;
+    border-radius: 5px;
+}
+
+.chatrooms-item {
+    background-color: honeydew;
+    border: solid 1px black;
+    border-radius: 5px;
+}

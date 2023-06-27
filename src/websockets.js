@@ -31,10 +31,10 @@ export const sendMessagesToAllConnections = async () => {
         messagesWithUsers,
     })
 
-    const message = {
-        type: "messages",
-        html: html
-    }
+  const message = {
+      type: "messages",
+      html: html
+  }
 
     for (const connection of connections) {
         const json = JSON.stringify(message)
