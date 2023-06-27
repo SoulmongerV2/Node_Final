@@ -3,6 +3,9 @@ import { getUserById } from "./users.js"
 
 export const getAllMessages = async () => {
     const messages = await db("messages").select("*")
+
+    
+
     return messages
 }
 
