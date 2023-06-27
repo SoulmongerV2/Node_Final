@@ -4,7 +4,8 @@ div {
 
 .messages-area {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: center;
     align-items: flex-start;
     border: solid 1px red;
 }
@@ -35,5 +36,7 @@ div {
 
 .bottom-area {
     display:flex;
-    flex-direction: column;
+    flex-direction: row;
+    justify-content:center;
+    border: solid 1px blue;
 }
