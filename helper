@@ -1,0 +1,128 @@
+// _message.ejs with styles
+
+
+
+  <ul style="list-style-type: none">
+    <% for (const msg of messagesWithUsers) { %>
+      <li>
+        <div class="messages-item 
+        <% if (msg.userId === userId) { %>own-message<% } %>">
+          <%= msg.text %>
+  
+          <a href="/remove-msg/<%= msg.id %>">Remove</a>
+          <a href="/toggle-msg/<%= msg.id %>">
+            <%= msg.liked ? 'Liked' : 'Unliked' %>
+          </a>
+          <%= msg.username %>
+          <%= msg.createdAt.split(' ')[1] %>
+        </div>
+      </li>
+    <% } %>
+  </ul>
+
+  //without 
+  <ul style="list-style-type: none">
+    <% for (const msg of messagesWithUsers) { %>
+      <li class="messages-item">
+        <%= msg.text %>
+        <a href="/remove-msg/<%= msg.id %>">Remove</a>
+        <a href="/toggle-msg/<%= msg.id %>">
+          <%= msg.liked ? 'Liked' : 'Unliked' %>
+        </a>
+        <%= msg.username %>
+        <%= msg.createdAt.split(' ')[1] %>
+      </li>
+      <% } %>
+  </ul>
+------
+
+//sendMessagesToAllConnections with userId
+export const sendMessagesToAllConnections = async (userId) => {
+    const messages = await db("messages").select("*")
+    const messagesWithUsers = await getMessagesWithUsers(messages)
+
+    const html = await ejs.renderFile("views/_messages.ejs", {
+        messagesWithUsers,
+        userId
+    })
+
+    const message = {
+        type: "messages",
+        html: html
+    }
+
+    for (const connection of connections) {
+        const json = JSON.stringify(message)
+        connection.send(json)
+    }
+    console.log(userId)
+}
+
+
+//create Websocket server - adding userId to Websocket
+
+export const createWebSocketServer = (server, userId) => {
+    const wss = new WebSocketServer({ server })
+
+    wss.on("connection", (ws) => {
+        
+        ws.userId = userId
+        console.log(userId)
+
+        connections.add(ws)
+        console.log("New connection", connections.size)
+        //console.log(request.url)
+        sendUserInfoToAllConnections("A user has joined")
+        
+
+        ws.on("close", () => {
+            connections.delete(ws)
+            console.log("Closed connection", connections.size)
+            sendUserInfoToAllConnections("A user has disconnected")
+        })
+    })
+}
+
+
+//get chatroom router with userId
+
+router.get("/chatroom/:id", async (req, res) => {
+    const chatroomId = Number(req.params.id)
+    const userId = res.locals.user.id
+
+    const messages = await getAllMessagesByChatroom(chatroomId)
+    const messagesWithUsers = await getMessagesWithUsers(messages)
+    const chatroom = await db("chatrooms").where("id", chatroomId).first()
+    
+
+    res.render("chatroom", {
+        chatroom, 
+        messagesWithUsers,
+        userId
+    })
+
+  })
+
+//
+create ws server with annoucement
+
+  export const createWebSocketServer = (server) => {
+    const wss = new WebSocketServer({ server })
+
+    wss.on("connection", (ws) => {
+        
+
+        connections.add(ws)
+        console.log("New connection", connections.size)
+        //console.log(request.url)
+        sendUserInfoToAllConnections("A user has joined")
+        
+
+        ws.on("close", () => {
+            connections.delete(ws)
+            console.log("Closed connection", connections.size)
+            sendUserInfoToAllConnections("A user has disconnected")
+        })
+    })
+}
+

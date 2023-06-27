@@ -38,18 +38,16 @@ router.get("/delete-chatroom/:id", async (req, res) => {
 
 router.get("/chatroom/:id", async (req, res) => {
     const chatroomId = Number(req.params.id)
-    const userId = res.locals.user.id
 
     const messages = await getAllMessagesByChatroom(chatroomId)
     const messagesWithUsers = await getMessagesWithUsers(messages)
-    const chatroom = await db("chatrooms").where("id", chatroomId).first();
-    //console.log(userId)
-    console.log(messagesWithUsers)
+    const chatroom = await db("chatrooms").where("id", chatroomId).first()
+    
 
     res.render("chatroom", {
         chatroom, 
         messagesWithUsers,
-        userId
+        getUserById,
     })
 
   })
@@ -99,7 +97,7 @@ router.post("/join-chatroom/", async (req, res) => {
     const enteredHash = crypto.pbkdf2Sync(password, salt, 100000, 64, "sha512").toString("hex")
     //incorrect password
     if (hash !== enteredHash) {
-      return res.redirect(`/join-chatroom/${chatroomId}`);
+      return res.redirect(`/join-chatroom/${chatroomId}`)
     }
 
     res.redirect(`/chatroom/${chatroomId}`)

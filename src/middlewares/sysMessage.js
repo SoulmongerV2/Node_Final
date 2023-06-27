@@ -1,3 +1,4 @@
+/* DELETUS
 export const displaySystemMessage = (message) => {
     // Create a new system message element
     const systemMessageElement = document.createElement("div");
@@ -8,3 +9,6 @@ export const displaySystemMessage = (message) => {
     const chatInterface = document.getElementById("chat-interface");
     chatInterface.appendChild(systemMessageElement);
   }
+
+
+  */ 

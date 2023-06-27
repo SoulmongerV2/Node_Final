@@ -10,49 +10,44 @@ const connections = new Set()
 
 
 
-export const createWebSocketServer = (server, userId) => {
+export const createWebSocketServer = (server) => {
     const wss = new WebSocketServer({ server })
 
     wss.on("connection", (ws) => {
         
-        ws.userId = userId
-        console.log(userId)
 
         connections.add(ws)
         console.log("New connection", connections.size)
-        //console.log(request.url)
-        sendUserInfoToAllConnections("A user has joined")
+        
         
 
         ws.on("close", () => {
             connections.delete(ws)
             console.log("Closed connection", connections.size)
-            sendUserInfoToAllConnections("A user has disconnected")
         })
     })
 }
 
 
-export const sendMessagesToAllConnections = async (userId) => {
-    const messages = await db("messages").select("*")
-    const messagesWithUsers = await getMessagesWithUsers(messages)
+export const sendMessagesToAllConnections = async () => {
+  const messages = await db("messages").select("*")
+  const messagesWithUsers = await getMessagesWithUsers(messages)
 
-    const html = await ejs.renderFile("views/_messages.ejs", {
-        messagesWithUsers,
-        userId
-    })
+  const html = await ejs.renderFile("views/_messages.ejs", {
+      messagesWithUsers,
+  })
 
-    const message = {
-        type: "messages",
-        html: html
-    }
+  const message = {
+      type: "messages",
+      html: html
+  }
 
-    for (const connection of connections) {
-        const json = JSON.stringify(message)
-        connection.send(json)
-    }
-    console.log(userId)
+  for (const connection of connections) {
+      const json = JSON.stringify(message)
+      connection.send(json)
+  }
 }
+
 
 
 export const sendUserInfoToAllConnections = (message) => {
@@ -66,30 +61,3 @@ export const sendUserInfoToAllConnections = (message) => {
       connection.send(json)
     }
   }
-/*
-export const sendUserInfoToAllConnections = () => {
-  const userCount = connections.size;
-  const connectedUsers = Array.from(connections).map((ws) => {
-    const url = new URL(ws.upgradeReq.url, `http://${ws.upgradeReq.headers.host}`);
-    const chatroomId = url.pathname.split("/")[2];
-    return { chatroomId, userId };
-  });
-
-  const userInfo = {
-    type: "userInformation",
-    userCount,
-    connectedUsers,
-  };
-
-  const json = JSON.stringify(userInfo);
-
-  for (const connection of connections) {
-    connection.send(json);
-  }
-}
-
-
-
-  
-
-*/
