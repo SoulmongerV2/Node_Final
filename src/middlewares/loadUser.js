@@ -8,6 +8,12 @@ export default async (req, res, next) => {
     } else {
         res.locals.user = null
     }
+    console.log(res.locals.user)
+
 
     next()
 }
+
+
+
+  

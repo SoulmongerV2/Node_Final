@@ -1,38 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chatroom</title>
-</head>
-<body>
+
+<%- include('_header') %>
   <h1><Chatroom></h1>
 
   
 
-
-    <div id="messages">
+    <div class="messages-area">
       <%- include("_messages") %>
     </div>
-
-  <form action="/new-msg" method="post">
-    <input type="hidden" name="userId" value="<%= user.id %>" />
-    <input type="hidden" name="chatroomId" value="<%= chatroom.id %>" />
-    <input type="text" name="text" />
-    <button type="submit">Send</button>
-  </form>
+    
+  <div class="bottom-area">
+    <form action="/new-msg" method="post">
+      <span class="text-area">
+        <input type="hidden" name="userId" value="<%= user.id %>" />
+        <input type="hidden" name="chatroomId" value="<%= chatroom.id %>" />
+        <input type="text" name="text" />
+      </span>
+      <button type="submit">Send</button>
+    </form>
+  </div>  
 
   <script>
     const ws = new WebSocket("ws://localhost:3000")
     
     ws.addEventListener("message", (ev) => {
       const message = JSON.parse(ev.data)
-      document.getElementById("messages").innerHTML = message.html
-      document.getElementById("userCount").textContent = `Connected Users: ${message.userCount}`
+
+      if (message.type === "systemMessage") {
+        const systemMessage = message.message
+        displaySystemMessage(systemMessage)
+      } else {
+        document.getElementById("messages").innerHTML = message.html
+        document.getElementById("userCount").textContent = `Connected Users: ${message.userCount}`
+      }
     })
     
     
   </script>
-</body>
-</html>
+<%- include('_footer') %>
