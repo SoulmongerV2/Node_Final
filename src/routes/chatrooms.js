@@ -41,12 +41,13 @@ router.get("/chatroom/:id", async (req, res) => {
 
     const messages = await getAllMessagesByChatroom(chatroomId)
     const messagesWithUsers = await getMessagesWithUsers(messages)
-    const chatroom = await db("chatrooms").where("id", chatroomId).first();
+    const chatroom = await db("chatrooms").where("id", chatroomId).first()
+  
 
     res.render("chatroom", {
         chatroom, 
-        messagesWithUsers,
-        getUserById
+        messagesWithUsers
+        
     })
 
   })
