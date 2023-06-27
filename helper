@@ -1,0 +1,70 @@
+import { WebSocketServer } from "ws";
+import ejs from "ejs";
+import { db } from "./database.js";
+
+/** @type {Map<WebSocket, string>} */
+const chatroomSockets = new Map(); // Map WebSocket connections to their corresponding chatrooms
+
+export const createWebSocketServer = (server) => {
+  const wss = new WebSocketServer({ server });
+
+  wss.on("connection", (ws) => {
+    console.log("New connection");
+
+    ws.on("message", async (message) => {
+      const { chatroomId, data } = JSON.parse(message);
+      
+      // Handle different types of messages (e.g., 'join', 'message')
+      if (data.type === "join") {
+        chatroomSockets.set(ws, chatroomId);
+        // Perform necessary operations when a user joins a chatroom
+        // (e.g., add the user to the list of connected users)
+        console.log("User joined chatroom:", chatroomId);
+      } else if (data.type === "message") {
+        // Broadcast the message to all connected users in the same chatroom
+        const chatroom = chatroomSockets.get(ws);
+        const messages = await db("messages").insert({ chatroomId, text: data.text, createdAt: new Date() }).returning("*");
+        const html = await ejs.renderFile("views/_messages.ejs", {
+          messages,
+        });
+
+        const broadcastMessage = {
+          type: "messages",
+          html: html,
+        };
+
+        for (const connection of wss.clients) {
+          if (chatroomSockets.get(connection) === chatroom) {
+            const json = JSON.stringify(broadcastMessage);
+            connection.send(json);
+          }
+        }
+      }
+    });
+
+    ws.on("close", () => {
+      chatroomSockets.delete(ws);
+      console.log("Closed connection");
+    });
+  });
+};
+
+export const sendMessagesToAllConnections = async () => {
+  // This function can be modified as per your requirements
+  // It sends messages to all connections, but you can adapt it to send messages to specific chatrooms
+  const messages = await db("messages").select("*");
+
+  const html = await ejs.renderFile("views/_messages.ejs", {
+    messages,
+  });
+
+  const message = {
+    type: "messages",
+    html: html,
+  };
+
+  for (const connection of chatroomSockets.keys()) {
+    const json = JSON.stringify(message);
+    connection.send(json);
+  }
+};
